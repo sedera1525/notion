@@ -162,6 +162,11 @@ publication Notion, contrôle des chiffres, gestion des erreurs.
 une nouvelle page de la base « Projets / études ». Un même dossier peut donc y figurer
 deux fois : le projet et sa synthèse.
 
+## Ce qui reste à faire à la main
+
+Vues Notion, mesure des temps, vidéo, partage : voir
+[docs/reste-a-faire.md](docs/reste-a-faire.md).
+
 ## Structure du dépôt
 
 ```
@@ -179,7 +184,8 @@ deux fois : le projet et sa synthèse.
 │   ├── guide-equipe.md          guide non technique
 │   ├── schema-flux.md           flux complet et planification
 │   ├── vues-a-creer-manuellement.md
-│   └── mesure-gain-de-temps.md
+│   ├── mesure-gain-de-temps.md
+│   └── reste-a-faire.md
 └── .claude/skills/
     └── synthese-rapport-activite/SKILL.md
 ```
