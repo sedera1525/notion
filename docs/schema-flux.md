@@ -1,7 +1,64 @@
 # Flux de traitement et planification
 
-> Le schéma complet du flux est ajouté en phase 8. Cette page couvre pour l'instant
-> la planification automatique et l'authentification.
+## Le flux en un coup d'œil
+
+```
+   ┌─────────────────┐
+   │  Un rapport est │   .docx ou .pdf
+   │  déposé dans    │   déposé à la main, ou par la tâche planifiée
+   │  input/         │
+   └────────┬────────┘
+            │
+            ▼
+   ┌─────────────────────────┐
+   │ lancer_synthese.sh      │  vérifie Claude Code et la connexion Notion
+   └────────┬────────────────┘
+            │
+            ▼
+      ╔═════════════════╗
+      ║ Déjà traité ?   ║  comparaison de l'empreinte SHA-256
+      ╚══╦═══════════╦══╝  avec output/traites.txt
+     oui ║           ║ non
+         ▼           ▼
+   ┌──────────┐  ┌──────────────────────────┐
+   │ Ignoré   │  │ Claude Code              │  mode non interactif
+   └──────────┘  │ skill :                  │  outils restreints
+                 │ synthese-rapport-activite│
+                 └────────┬─────────────────┘
+                          │
+                          ▼
+                 ┌──────────────────────────┐
+                 │ Lecture du document      │
+                 │ Rédaction en 6 sections  │  aucun chiffre inventé
+                 └────────┬─────────────────┘
+                          │
+                          ▼
+                 ┌──────────────────────────┐
+                 │ Page créée dans Notion   │  base « Projets / études »
+                 │ + rattachée au client    │  sous « H Factory – Démo »
+                 └────────┬─────────────────┘
+                          │
+                          ▼
+                 ┌──────────────────────────┐
+                 │ Fichier marqué traité    │  output/traites.txt
+                 │ Tout est journalisé      │  output/journal.log
+                 └──────────────────────────┘
+```
+
+### Même schéma en Mermaid
+
+```mermaid
+flowchart TD
+    A["Rapport .docx ou .pdf<br/>déposé dans input/"] --> B["lancer_synthese.sh<br/>vérifie Claude Code et Notion"]
+    B --> C{"Déjà traité ?<br/>empreinte SHA-256"}
+    C -- oui --> D["Ignoré"]
+    C -- non --> E["Claude Code<br/>mode non interactif, outils restreints"]
+    E --> F["Skill synthese-rapport-activite"]
+    F --> G["Lecture du document<br/>Rédaction en 6 sections<br/>aucun chiffre inventé"]
+    G --> H["Page créée dans Notion<br/>base « Projets / études »<br/>rattachée au client"]
+    H --> I["Fichier marqué traité<br/>output/traites.txt"]
+    E -- échec --> J["Erreur journalisée<br/>fichier non marqué, sera retenté"]
+```
 
 ## Ce que fait le script
 
