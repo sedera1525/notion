@@ -1,0 +1,35 @@
+# --- Secrets : ne JAMAIS committer ---
+.env
+.env.local
+*.key
+*.pem
+secrets/
+
+# --- Sorties générées ---
+output/
+
+# --- Python (génération du rapport fictif, phase 5) ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# --- Node (si besoin plus tard) ---
+node_modules/
+
+# --- Fichiers temporaires & système ---
+*.tmp
+*.bak
+*.log
+.DS_Store
+Thumbs.db
+~$*.docx
+~$*.xlsx
+
+# --- Éditeurs ---
+.vscode/
+.idea/
+
+# --- Claude Code (état local, pas de config partagée) ---
+.claude/settings.local.json
