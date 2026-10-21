@@ -6,7 +6,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@notionhq/notion-mcp-server"
+        "@notionhq/notion-mcp-server@2.5.2"
       ],
       "env": {
         "NOTION_TOKEN": "ntn_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
