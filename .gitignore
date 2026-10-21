@@ -1,6 +1,12 @@
 # --- Secrets : ne JAMAIS committer ---
 .env
 .env.local
+# contient le jeton Notion (modèle versionné : .mcp.json.example)
+.mcp.json
+# brouillons personnels : peuvent contenir des jetons collés à la volée
+note.md
+notes.md
+brouillon*.md
 *.key
 *.pem
 secrets/

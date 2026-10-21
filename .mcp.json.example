@@ -1,0 +1,16 @@
+{
+  "_commentaire": "Modèle de configuration du serveur MCP Notion. Copier en .mcp.json puis remplacer la valeur de NOTION_TOKEN par le jeton d'intégration (commence par ntn_). Le fichier .mcp.json n'est jamais committé : il contient un secret.",
+  "mcpServers": {
+    "notion": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ],
+      "env": {
+        "NOTION_TOKEN": "ntn_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    }
+  }
+}
