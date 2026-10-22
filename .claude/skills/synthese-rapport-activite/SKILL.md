@@ -52,6 +52,8 @@ Lire la date et l'heure de la machine, ne jamais les estimer — la règle « ne
 python3 -c "import datetime; print(datetime.datetime.now().strftime('%d/%m/%Y %Hh%M'))"
 ```
 
+**Reprendre la sortie telle quelle**, sans la reformuler. Le titre s'écrit donc « Synthèse T3 2026 — mise à jour du 22/10/2026 à 21h09 », et jamais « du 22 octobre 2026 ». Ces sections se trient à l'œil dans une page : deux formats de date mélangés rendent l'ordre illisible.
+
 Cette règle vaut pour les trois cas :
 
 - en cas A, la section existante est dans la page du projet ;

@@ -96,27 +96,28 @@ en **connected**.
 
 ## Utilisation
 
-### Générer le rapport de démonstration
+### Les rapports de démonstration
+
+Deux rapports fictifs sont **déjà versionnés dans `input/`** :
+
+| Fichier | Rôle |
+|---|---|
+| `rapport-t3-demo.docx` | 5 pages, pour un client qui a déjà un projet dans Notion |
+| `rapport-t3-caldeira.docx` | plus court, pour un client qui n'avait pas de projet |
+
+🛑 **Il n'y a normalement rien à générer.** Les deux scripts ci-dessous existent pour
+montrer comment les rapports ont été fabriqués, pas pour être relancés :
 
 ```bash
-.venv/bin/python scripts/generer_rapport_demo.py
+.venv/bin/python scripts/generer_rapport_demo.py    # écrase rapport-t3-demo.docx
+.venv/bin/python scripts/generer_rapport_cas_c.py   # écrase rapport-t3-caldeira.docx
 ```
 
-Produit `input/rapport-t3-demo.docx`, un rapport fictif de 5 pages, pour un client qui a
-déjà un projet dans Notion.
-
-```bash
-.venv/bin/python scripts/generer_rapport_cas_c.py
-```
-
-Produit `input/rapport-t3-caldeira.docx`, un rapport plus court pour un client qui
-n'avait pas de projet. Il a servi à éprouver le chemin où le skill crée une page au lieu
-de se rattacher à un projet existant.
-
-⚠️ **Ce fichier est déjà dans le dépôt : inutile de le régénérer.** Le relancer écrase un
-fichier versionné et, l'empreinte changeant, le prochain traitement ajoutera une section
-« mise à jour » dans Notion. Et le chemin qu'il servait à tester n'est plus celui-là :
-voir [Limites connues](#limites-connues). Le détail est en tête du script.
+Relancer l'un des deux a trois effets, tous indésirables : il salit l'arbre de travail
+en écrasant un fichier versionné ; l'empreinte du `.docx` change, donc le prochain
+traitement prend le rapport pour une version corrigée et ajoute une section « mise à
+jour » dans Notion ; et le chemin que le second servait à éprouver n'est plus
+atteignable, voir [Limites connues](#limites-connues).
 
 ### Synthétiser les nouveaux rapports
 
@@ -221,11 +222,21 @@ dans Notion, mais contient un chemin de fichier local (`input/…`). Notion l'af
 donc comme un lien qui ne mène nulle part. C'est une valeur à lire. En production, avec
 des rapports stockés sur un espace partagé, la propriété retrouverait son usage normal.
 
-**Une page créée par le skill devient le projet du client.** Quand un client n'a pas de
-projet, le skill crée une page dans « Projets / études ». Cette page étant reliée au
-client, les rapports suivants s'y rattachent comme à n'importe quel projet. Les deux
-chemins convergent donc, et aucune ligne ne se duplique — vérifié sur cinq passages
-consécutifs du même rapport, qui ont produit une seule ligne.
+**Une page créée par le skill devient le projet du client — pour cette période
+seulement.** Quand un client n'a pas de projet, le skill crée une page dans
+« Projets / études ». Cette page étant reliée au client, un rapport **de la même
+période** s'y rattache ensuite comme à n'importe quel projet : vérifié sur six passages
+consécutifs du même rapport, qui n'ont produit qu'une seule ligne.
+
+En revanche, un rapport du trimestre **suivant** ne chevauche pas la période de cette
+page. Le filtre écarte donc la page, et le skill crée une seconde ligne. Résultat pour un
+client qui n'a pas de projet dans la base : **une page de synthèse par trimestre**.
+
+Ce n'est pas aberrant — chaque trimestre a sa page, reliée au bon client — mais ce n'est
+pas le « un dossier, une ligne » obtenu pour un client qui a un vrai projet. Un client
+cumulant plusieurs pages finira d'ailleurs par déclencher le cas d'ambiguïté. La réponse
+propre est de créer un projet dans la base pour ce client : les synthèses s'y
+rassembleront alors toutes seules.
 
 La règle « page du même titre » prévue pour le cas C n'a donc jamais eu à servir. Elle ne
 compte que lorsqu'il n'y a aucune relation client à suivre, c'est-à-dire quand le client

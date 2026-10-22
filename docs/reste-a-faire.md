@@ -33,11 +33,30 @@ premier**, et compter la relecture de contrôle dans le temps automatisé.
 
 ## 3. Enregistrer la vidéo de démonstration (2 minutes)
 
-Déroulé suggéré :
+### Avant de lancer l'enregistrement — à faire, sinon la démonstration rate
+
+`input/` contient maintenant **deux** rapports versionnés, et `output/traites.txt` n'est
+pas versionné. Sur une machine au suivi vide, une seule exécution traite donc les deux
+fichiers : plusieurs minutes de silence à l'écran au lieu de dix secondes, et deux pages
+Notion modifiées au lieu d'une.
+
+Deux commandes suffisent à préparer un plan propre :
+
+```bash
+./scripts/lancer_synthese.sh                      # marque tout comme traité
+grep -v 'rapport-t3-demo' output/traites.txt > /tmp/t && mv /tmp/t output/traites.txt
+```
+
+Le rapport vanille redevient alors le seul fichier neuf. L'exécution filmée ne traitera
+que lui, en une minute et demie environ, et ajoutera une section « mise à jour » de plus
+dans sa fiche — ce qui est précisément ce que le point 4 du déroulé montre.
+
+### Déroulé suggéré
 
 1. Montrer la page « Accueil – Démo » et les quatre bases (15 s).
-2. Déposer un rapport dans `input/` (10 s).
-3. Lancer `./scripts/lancer_synthese.sh` (10 s).
+2. Montrer le rapport posé dans `input/` (10 s).
+3. Lancer `./scripts/lancer_synthese.sh` (10 s à l'écran, ~1 min 30 d'attente à couper
+   au montage).
 4. Ouvrir « Projets / études » et montrer qu'**aucune ligne n'a été ajoutée** : la
    synthèse est allée dans la fiche « Étude de filière vanille durable ». Ouvrir cette
    fiche et faire défiler jusqu'à la section « Synthèse T3 2026 » (30 s).
@@ -144,7 +163,7 @@ secondes par exécution. Ce qui a été vérifié :
 - aucune propriété du projet modifiée ;
 - **cas C** : pour un client sans projet (Caldeira Solaire), une page est créée, avec
   Client, Période, Statut et Source du rapport renseignés ;
-- **pas de ligne en double** : le même rapport Caldeira repassé quatre fois de plus n'a
+- **pas de ligne en double** : le même rapport Caldeira repassé cinq fois de plus n'a
   créé **aucune seconde ligne**. La base est passée de 4 à 5 lignes, et s'y est tenue ;
 - le script traite bien **tous** les fichiers non traités d'une même exécution, et pas
   seulement le premier : suivi vidé, deux rapports neufs, une seule exécution, bilan
