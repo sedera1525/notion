@@ -5,8 +5,8 @@ Il explique comment obtenir la synthèse d'un rapport d'activité dans Notion.
 
 ## En deux phrases
 
-Vous déposez un rapport dans un dossier. Quelques minutes plus tard, sa synthèse
-apparaît dans Notion, dans la base « Projets / études ».
+Vous déposez un rapport dans un dossier. Une à deux minutes plus tard, sa synthèse
+apparaît dans Notion, dans la fiche du projet concerné.
 
 Vous n'avez rien à rédiger. Vous avez en revanche une relecture à faire : c'est
 expliqué plus bas.
@@ -27,7 +27,9 @@ Quelques conseils :
   Pour vérifier, ouvrez le PDF et essayez de surligner une phrase à la souris.
   Si rien ne se surligne, le document est une image.
 - Si vous corrigez un rapport déjà traité et que vous le redéposez, il sera retraité.
-  C'est voulu.
+  C'est voulu. Une seconde section apparaît alors, intitulée « Synthèse … — mise à jour
+  du … ». **L'ancienne est conservée au-dessus** : l'outil ne supprime jamais rien.
+  C'est à vous de supprimer celle que vous ne gardez pas.
 
 ---
 
@@ -60,21 +62,42 @@ pas de doublon.
 ## 3. Vérifier le résultat dans Notion
 
 Ouvrez Notion, puis la base **« Projets / études »** sous la page
-**« H Factory – Démo »**. Une nouvelle page porte le nom de la synthèse.
+**« H Factory – Démo »**.
 
-**Relisez-la.** C'est l'étape la plus importante, et elle vous revient.
+**Où regarder.** Dans la plupart des cas, aucune ligne nouvelle n'apparaît. La synthèse
+est écrite **à l'intérieur** de la fiche du projet du client, sous un titre
+« Synthèse » suivi de la période. Ouvrez la fiche du projet et faites défiler.
+
+C'est voulu : un dossier reste sur une seule ligne, au lieu de se dédoubler à chaque
+rapport reçu.
+
+Une ligne nouvelle apparaît quand l'outil ne sait pas dans quelle fiche ranger la
+synthèse : le client n'est pas nommé clairement dans le rapport, il n'a pas encore de
+projet dans la base, son seul projet porte sur une tout autre période, ou il en a
+plusieurs et aucun ne se détache. Dans tous ces cas, l'outil écrit pourquoi dans le
+journal (`output/journal.log`).
+
+Il préfère créer une ligne de trop plutôt que de ranger une synthèse dans le mauvais
+dossier : une ligne en trop se voit, une synthèse mal classée ne se voit pas.
+
+**Relisez la synthèse.** C'est l'étape la plus importante, et elle vous revient.
 
 Points à contrôler :
 
 | À vérifier | Comment |
 |---|---|
-| La synthèse est rattachée au bon client | Propriété **Client** en haut de la page |
-| La période est la bonne | Propriété **Période** |
+| La synthèse est dans la bonne fiche | Le nom du projet et sa propriété **Client** en haut de la page |
+| La période est la bonne | Le titre de la section, par exemple « Synthèse T3 2026 » |
 | Les chiffres sont justes | Chaque chiffre indique sa section d'origine, par exemple « (section 2) ». Ouvrez le rapport à cette section et comparez |
 | Rien n'a été inventé | Quand une information manque dans le rapport, la synthèse écrit **« non précisé »**. C'est normal et voulu : ce n'est pas une erreur à corriger, c'est une information absente du document d'origine |
 
-Si un chiffre vous semble faux, revenez toujours au rapport d'origine. Le lien vers le
-fichier source figure dans la propriété **Source du rapport**.
+Si un chiffre vous semble faux, revenez toujours au rapport d'origine. **La première
+ligne de la synthèse, en italique, donne le nom du fichier**, sa référence, la période
+et l'auteur — par exemple « Source : input/rapport-t3-demo.docx — réf. VH-2026-T3-001 ».
+
+C'est bien cette ligne qu'il faut lire, et non la propriété **Source du rapport** de la
+fiche projet : un projet reçoit plusieurs rapports au fil du temps, alors que cette
+propriété ne peut en désigner qu'un seul.
 
 ---
 

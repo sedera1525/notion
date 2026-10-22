@@ -12,7 +12,8 @@ réalité.
 ```
    rapport .docx / .pdf              Claude Code                    Notion
    déposé dans input/     ──────▶    + skill de synthèse   ──────▶  base « Projets / études »
-                                                                     page rattachée au client
+                                                                     dans la page du projet
+                                                                     du client
 ```
 
 Le détail figure dans [docs/schema-flux.md](docs/schema-flux.md).
@@ -114,6 +115,35 @@ Produit `input/rapport-t3-demo.docx`, un rapport fictif de 5 pages.
 Les rapports déjà traités sont ignorés. Le suivi se fait par empreinte du contenu, dans
 `output/traites.txt`. Tout est journalisé dans `output/journal.log`.
 
+### Où la synthèse est publiée
+
+La règle est faite pour qu'un dossier reste sur **une seule ligne** dans
+« Projets / études » :
+
+1. Le skill retrouve la fiche du client dans « Clients & prospects ».
+2. Il cherche les projets liés à cette fiche, par la relation `Client`.
+3. Il ne garde que ceux dont la période **chevauche** celle du rapport. Un projet sans
+   période renseignée reste candidat.
+4. **Un seul candidat** → la synthèse est ajoutée dans la page de ce projet, sous un
+   titre « Synthèse `PÉRIODE` ». Aucune ligne n'est créée.
+5. **Aucun candidat, ou plusieurs** → une page est créée dans « Projets / études », et
+   le récapitulatif explique pourquoi.
+
+Le filtre sur la période s'applique même quand le client n'a qu'un seul projet : sans
+lui, une synthèse du T3 2026 pourrait atterrir dans une étude close en 2024.
+
+**Rapport corrigé puis redéposé.** Le script le retraite, puisque son empreinte a
+changé. Le skill ajoute alors une section « Synthèse `PÉRIODE` — mise à jour du … » et
+conserve la précédente au-dessus, que la synthèse vive dans une page projet ou dans une
+page créée par le skill. Rien n'est écrasé, et une correction n'est jamais perdue —
+c'est à un humain de choisir laquelle des deux versions garder.
+
+**Où est le lien vers le rapport source.** Chaque section de synthèse commence par une
+ligne en italique qui donne le fichier, sa référence, la période et l'auteur. C'est elle
+qu'il faut lire, et non la propriété `Source du rapport` de la fiche projet : un projet
+reçoit plusieurs rapports, une propriété unique ne peut pas désigner le bon fichier pour
+chacun. Le skill ne modifie donc aucune propriété d'un projet existant.
+
 ### Planifier l'exécution
 
 Voir [docs/schema-flux.md](docs/schema-flux.md) : cron, Planificateur de tâches
@@ -147,6 +177,11 @@ faite une seule fois, qui ne concerne pas le flux automatisé.
 n'acceptent que de véritables membres de l'espace de travail. Avec des données
 fictives, elles ne peuvent pas être remplies.
 
+Une seule vue en dépendait — « Par équipe » dans « Projets / études ». Une propriété
+de sélection `Équipe (démo)` a donc été ajoutée à cette base, avec trois pôles fictifs,
+pour que la vue ait quelque chose à afficher. Les autres propriétés « personne » sont
+laissées vides : aucune vue ne les utilise.
+
 **Les documents scannés ne sont pas lus.** Le texte doit être sélectionnable dans le
 fichier d'origine.
 
@@ -154,13 +189,27 @@ fichier d'origine.
 en production, utiliser une clé API Anthropic. Détails dans
 [docs/schema-flux.md](docs/schema-flux.md).
 
-**Le cycle complet n'a pas été testé de bout en bout en une seule fois.** Chaque maillon
-a été vérifié séparément : génération du rapport, invocation non interactive, skill,
-publication Notion, contrôle des chiffres, gestion des erreurs.
+**La sélection des chiffres clés dépend du jugement du modèle.** Le format limite la
+synthèse à 5 indicateurs. Quand le rapport en contient davantage, le choix des cinq
+peut varier d'une exécution à l'autre. Les chiffres écartés ne disparaissent pas pour
+autant : ils se retrouvent dans les autres rubriques.
 
-**Une synthèse crée une entrée distincte du projet.** Le skill publie la synthèse comme
-une nouvelle page de la base « Projets / études ». Un même dossier peut donc y figurer
-deux fois : le projet et sa synthèse.
+**Le rattachement au projet repose sur la relation « Client ».** Si un client a
+plusieurs projets dont les périodes chevauchent celle du rapport, le skill ne tranche
+pas : il crée une entrée distincte et signale l'ambiguïté. C'est un choix assumé —
+mieux vaut une ligne en trop qu'une synthèse rangée dans le mauvais dossier.
+
+**La propriété `Source du rapport` n'est pas un lien cliquable.** Elle est de type URL
+dans Notion, mais contient un chemin de fichier local (`input/…`). Notion l'affiche
+donc comme un lien qui ne mène nulle part. C'est une valeur à lire. En production, avec
+des rapports stockés sur un espace partagé, la propriété retrouverait son usage normal.
+
+**La déduplication des pages créées par le skill n'est pas testée.** Quand un client n'a
+pas de projet, le skill crée une page ; si le même rapport corrigé revient, la règle lui
+demande de retrouver cette page et d'y ajouter une mise à jour plutôt que d'en créer une
+seconde. Ce chemin est spécifié mais n'a pas été joué : il faudrait un second rapport
+fictif pour un client sans projet. Le chemin de rattachement à un projet existant, lui,
+a été testé.
 
 ## Ce qui reste à faire à la main
 

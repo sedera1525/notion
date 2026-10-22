@@ -33,12 +33,20 @@
                  └────────┬─────────────────┘
                           │
                           ▼
-                 ┌──────────────────────────┐
-                 │ Page créée dans Notion   │  base « Projets / études »
-                 │ + rattachée au client    │  sous « H Factory – Démo »
-                 └────────┬─────────────────┘
-                          │
-                          ▼
+                 ╔══════════════════════════╗
+                 ║ Un seul projet du client ║  via la relation « Client »
+                 ║ sur une période qui      ║  sous « H Factory – Démo »
+                 ║ chevauche le rapport ?   ║
+                 ╚══╦════════════════════╦══╝
+                oui ║                    ║ non, ou ambigu
+                    ▼                    ▼
+      ┌─────────────────────┐  ┌─────────────────────┐
+      │ Synthèse ajoutée    │  │ Page créée dans     │
+      │ dans la page projet │  │ « Projets / études »│
+      │ aucune ligne créée  │  │ ambiguïté signalée  │
+      └──────────┬──────────┘  └──────────┬──────────┘
+                 └───────────┬────────────┘
+                             ▼
                  ┌──────────────────────────┐
                  │ Fichier marqué traité    │  output/traites.txt
                  │ Tout est journalisé      │  output/journal.log
@@ -55,8 +63,11 @@ flowchart TD
     C -- non --> E["Claude Code<br/>mode non interactif, outils restreints"]
     E --> F["Skill synthese-rapport-activite"]
     F --> G["Lecture du document<br/>Rédaction en 6 sections<br/>aucun chiffre inventé"]
-    G --> H["Page créée dans Notion<br/>base « Projets / études »<br/>rattachée au client"]
-    H --> I["Fichier marqué traité<br/>output/traites.txt"]
+    G --> H{"Un seul projet du client<br/>sur une période qui chevauche le rapport ?<br/>via la relation « Client »"}
+    H -- oui --> H1["Synthèse ajoutée dans la page du projet<br/>aucune ligne créée"]
+    H -- "non, ou ambigu" --> H2["Page créée dans « Projets / études »<br/>ambiguïté signalée"]
+    H1 --> I["Fichier marqué traité<br/>output/traites.txt"]
+    H2 --> I
     E -- échec --> J["Erreur journalisée<br/>fichier non marqué, sera retenté"]
 ```
 

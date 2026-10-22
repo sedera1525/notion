@@ -30,6 +30,19 @@ SIMULATION=0
 # Outils autorisés pour l'exécution non surveillée.
 # Liste volontairement restreinte : on n'utilise PAS --permission-mode bypassPermissions,
 # qui donnerait tous les droits à un agent tournant sans personne devant l'écran.
+#
+# python-docx vit dans .venv, hors de ce périmètre : le skill lit donc le .docx
+# avec la bibliothèque standard (zipfile). C'est voulu — élargir l'allowlist à
+# .venv/bin/python3 pour une seule bibliothèque ne vaut pas le droit accordé.
+#
+# Les trois outils de lecture (retrieve-a-page, retrieve-a-database,
+# get-block-children) servent à la règle de rattachement : retrouver le projet
+# du client et vérifier qu'il ne contient pas déjà la synthèse.
+#
+# Volontairement absent : patch-page. Il permettrait de modifier n'importe quelle
+# propriété — et d'archiver — sur toute page accessible au jeton. Le skill ne
+# modifie aucune propriété d'un projet existant, donc ce droit n'a pas lieu
+# d'être accordé à un agent qui tourne sans personne devant l'écran.
 OUTILS_AUTORISES=(
   "Skill"
   "Read"
@@ -37,6 +50,9 @@ OUTILS_AUTORISES=(
   "mcp__notion__API-post-search"
   "mcp__notion__API-query-data-source"
   "mcp__notion__API-retrieve-a-data-source"
+  "mcp__notion__API-retrieve-a-database"
+  "mcp__notion__API-retrieve-a-page"
+  "mcp__notion__API-get-block-children"
   "mcp__notion__API-post-page"
   "mcp__notion__API-patch-block-children"
 )
@@ -136,14 +152,21 @@ while IFS= read -r -d '' fichier; do
     continue
   fi
 
+  # La consigne ne dit pas « crée une page » : le skill décide s'il rattache la
+  # synthèse au projet existant du client ou s'il crée une ligne.
   consigne="Utilise le skill synthese-rapport-activite sur le fichier input/$nom.
-Ne pose aucune question : travaille de bout en bout et publie la page dans Notion.
-Termine par le titre de la page créée."
+Ne pose aucune question : travaille de bout en bout et publie la synthèse dans Notion,
+en appliquant la règle de rattachement du skill.
+Termine par l'endroit où la synthèse a été publiée : nom de la page projet complétée,
+ou titre de la page créée."
 
   if claude -p "$consigne" --allowedTools "${OUTILS_AUTORISES[@]}" \
        --output-format text >>"$JOURNAL" 2>&1; then
     printf '%s\t%s\t%s\n' "$empreinte" "$(date '+%Y-%m-%dT%H:%M:%S')" "$nom" >>"$SUIVI"
-    journal INFO "  Synthèse publiée pour : $nom"
+    # « traité » et non « publié » : le script sait que Claude s'est terminé sans
+    # erreur, pas ce qu'il a écrit dans Notion. Le détail est dans son récapitulatif,
+    # juste au-dessus dans ce journal.
+    journal INFO "  Traité sans erreur : $nom"
     traites=$((traites + 1))
   else
     journal ERREUR "  Échec du traitement de $nom. Le détail figure juste au-dessus dans ce journal."

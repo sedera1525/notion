@@ -75,13 +75,16 @@ Ce n'est pas une limite de l'outillage Claude : aucun client ne peut le faire au
 
 ### Vue 2 — Par équipe
 - **Type** : Tableau
-- **Regroupement** : `Équipe`
+- **Regroupement** : `Équipe (démo)` — **pas** `Équipe`
 - **Tri** : `Nom`, croissant
 
-> ⚠️ Le CLAUDE.md demandait « tableau par Responsable » pour cette base, mais la base
+> ⚠️ Deux propriétés se ressemblent dans cette base. Regrouper sur la bonne :
+> `Équipe` est de type « personne » et reste vide (voir la remarque en fin de fichier).
+> `Équipe (démo)` est une sélection, renseignée sur les quatre projets. C'est elle
+> qui donne une vue utilisable.
+>
+> Le CLAUDE.md demandait « tableau par Responsable » pour cette base, mais
 > « Projets / études » n'a pas de propriété `Responsable` : elle a `Équipe`.
-> J'ai donc regroupé par `Équipe`. Si tu préfères, dis-le et j'ajoute une propriété
-> `Responsable` à la base.
 
 ---
 
@@ -100,10 +103,23 @@ Ce n'est pas une limite de l'outillage Claude : aucun client ne peut le faire au
 
 Les propriétés `Responsable`, `Équipe` et `Auteur` ne peuvent être remplies qu'avec
 de vrais membres de l'espace de travail Notion. Les données de cette démo étant
-fictives, ces champs resteront vides.
+fictives, ces champs restent vides.
 
-Deux options possibles :
-- les laisser vides et l'expliquer pendant la démonstration ;
-- les remplacer par des champs texte pour y mettre des noms fictifs.
+**Décision prise.** Une seule vue en dépendait : « Par équipe » ci-dessus. Une propriété
+de sélection `Équipe (démo)` a été ajoutée à « Projets / études », avec trois pôles
+fictifs, et renseignée sur les quatre projets :
 
-À décider avec Jesse.
+| Projet | Équipe (démo) |
+|---|---|
+| Étude de filière vanille durable | Pôle Agro & Filières |
+| Diagnostic énergétique communal | Pôle Énergie & Climat |
+| Schéma directeur touristique | Pôle Territoires & Organisation |
+| Refonte du pilotage interne | Pôle Territoires & Organisation |
+
+Les propriétés `Responsable` (Clients & prospects, Appels d'offres) et `Auteur`
+(Documentation) sont laissées vides : aucune des neuf vues ne les utilise, donc rien
+ne justifie de dupliquer ces champs.
+
+Le type **sélection** a été retenu plutôt que du texte libre, parce que Notion garantit
+le regroupement sur une sélection et que cela reste cohérent avec `Statut`, `Phase`,
+`Secteur` et `Pays`, déjà des sélections.
