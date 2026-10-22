@@ -4,46 +4,27 @@
 Toutes les données sont inventées. Aucune entreprise, aucun montant et
 aucune personne ne correspond à la réalité.
 
+⚠️ Le fichier produit n'est pas stable octet par octet : python-docx horodate
+les entrées de l'archive zip, donc deux générations donnent des empreintes
+SHA-256 différentes. Comme lancer_synthese.sh suit les rapports par empreinte,
+régénérer ce fichier le fait passer pour un rapport corrigé, et le prochain
+traitement ajoutera une section « mise à jour » dans Notion.
+
 Usage : .venv/bin/python scripts/generer_rapport_demo.py
 Sortie : input/rapport-t3-demo.docx
 """
 
 from pathlib import Path
 
+from _docx_commun import para, preparer, tableau, titre
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
-from docx.shared import Pt
 
 SORTIE = Path(__file__).resolve().parent.parent / "input" / "rapport-t3-demo.docx"
 
 
-def titre(doc, texte, niveau):
-    doc.add_heading(texte, level=niveau)
-
-
-def para(doc, texte, gras=False, italique=False):
-    p = doc.add_paragraph()
-    s = p.add_run(texte)
-    s.bold, s.italic = gras, italique
-    return p
-
-
-def tableau(doc, entetes, lignes):
-    t = doc.add_table(rows=1, cols=len(entetes))
-    t.style = "Light Grid Accent 1"
-    for cell, texte in zip(t.rows[0].cells, entetes):
-        cell.paragraphs[0].add_run(texte).bold = True
-    for ligne in lignes:
-        for cell, texte in zip(t.add_row().cells, ligne):
-            cell.text = texte
-    doc.add_paragraph()
-    return t
-
-
 def construire():
-    doc = Document()
-    doc.styles["Normal"].font.name = "Calibri"
-    doc.styles["Normal"].font.size = Pt(11)
+    doc = preparer(Document())
 
     # ---------- Page de garde ----------
     t = doc.add_heading("Rapport d'activité trimestriel", level=0)

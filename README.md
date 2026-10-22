@@ -102,7 +102,21 @@ en **connected**.
 .venv/bin/python scripts/generer_rapport_demo.py
 ```
 
-Produit `input/rapport-t3-demo.docx`, un rapport fictif de 5 pages.
+Produit `input/rapport-t3-demo.docx`, un rapport fictif de 5 pages, pour un client qui a
+déjà un projet dans Notion.
+
+```bash
+.venv/bin/python scripts/generer_rapport_cas_c.py
+```
+
+Produit `input/rapport-t3-caldeira.docx`, un rapport plus court pour un client qui
+n'avait pas de projet. Il a servi à éprouver le chemin où le skill crée une page au lieu
+de se rattacher à un projet existant.
+
+⚠️ **Ce fichier est déjà dans le dépôt : inutile de le régénérer.** Le relancer écrase un
+fichier versionné et, l'empreinte changeant, le prochain traitement ajoutera une section
+« mise à jour » dans Notion. Et le chemin qu'il servait à tester n'est plus celui-là :
+voir [Limites connues](#limites-connues). Le détail est en tête du script.
 
 ### Synthétiser les nouveaux rapports
 
@@ -133,10 +147,13 @@ Le filtre sur la période s'applique même quand le client n'a qu'un seul projet
 lui, une synthèse du T3 2026 pourrait atterrir dans une étude close en 2024.
 
 **Rapport corrigé puis redéposé.** Le script le retraite, puisque son empreinte a
-changé. Le skill ajoute alors une section « Synthèse `PÉRIODE` — mise à jour du … » et
-conserve la précédente au-dessus, que la synthèse vive dans une page projet ou dans une
-page créée par le skill. Rien n'est écrasé, et une correction n'est jamais perdue —
-c'est à un humain de choisir laquelle des deux versions garder.
+changé. Le skill ajoute alors une section « Synthèse `PÉRIODE` — mise à jour du … à
+`HHhMM` » et conserve la précédente au-dessus, que la synthèse vive dans une page projet
+ou dans une page créée par le skill. Rien n'est écrasé, et une correction n'est jamais
+perdue — c'est à un humain de choisir laquelle des deux versions garder.
+
+L'heure figure dans le titre parce qu'un rapport peut être corrigé deux fois le même
+jour : sans elle, les deux mises à jour seraient indistinguables dans la page.
 
 **Où est le lien vers le rapport source.** Chaque section de synthèse commence par une
 ligne en italique qui donne le fichier, sa référence, la période et l'auteur. C'est elle
@@ -204,12 +221,21 @@ dans Notion, mais contient un chemin de fichier local (`input/…`). Notion l'af
 donc comme un lien qui ne mène nulle part. C'est une valeur à lire. En production, avec
 des rapports stockés sur un espace partagé, la propriété retrouverait son usage normal.
 
-**La déduplication des pages créées par le skill n'est pas testée.** Quand un client n'a
-pas de projet, le skill crée une page ; si le même rapport corrigé revient, la règle lui
-demande de retrouver cette page et d'y ajouter une mise à jour plutôt que d'en créer une
-seconde. Ce chemin est spécifié mais n'a pas été joué : il faudrait un second rapport
-fictif pour un client sans projet. Le chemin de rattachement à un projet existant, lui,
-a été testé.
+**Une page créée par le skill devient le projet du client.** Quand un client n'a pas de
+projet, le skill crée une page dans « Projets / études ». Cette page étant reliée au
+client, les rapports suivants s'y rattachent comme à n'importe quel projet. Les deux
+chemins convergent donc, et aucune ligne ne se duplique — vérifié sur cinq passages
+consécutifs du même rapport, qui ont produit une seule ligne.
+
+La règle « page du même titre » prévue pour le cas C n'a donc jamais eu à servir. Elle ne
+compte que lorsqu'il n'y a aucune relation client à suivre, c'est-à-dire quand le client
+n'est pas identifiable dans le rapport. Ce cas-là n'a pas été éprouvé.
+
+**Régénérer un rapport le fait passer pour un rapport corrigé.** `python-docx` horodate
+les entrées de l'archive `.docx`, donc deux générations du même script produisent des
+empreintes différentes. Le suivi se faisant par empreinte, relancer un générateur suffit
+à déclencher une section « mise à jour » dans Notion. C'est signalé en tête des deux
+générateurs.
 
 ## Ce qui reste à faire à la main
 
@@ -227,7 +253,9 @@ Vues Notion, mesure des temps, vidéo, partage : voir
 ├── input/                       rapports à synthétiser
 ├── output/                      journal et suivi (non versionné)
 ├── scripts/
-│   ├── generer_rapport_demo.py  génère le rapport fictif
+│   ├── _docx_commun.py          fonctions partagées par les générateurs
+│   ├── generer_rapport_demo.py  génère le rapport fictif principal
+│   ├── generer_rapport_cas_c.py génère un rapport pour un client sans projet
 │   └── lancer_synthese.sh       traitement planifiable
 ├── docs/
 │   ├── guide-equipe.md          guide non technique

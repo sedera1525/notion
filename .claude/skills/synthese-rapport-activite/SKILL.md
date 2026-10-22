@@ -30,6 +30,8 @@ Objectif : **une seule ligne par dossier** dans « Projets / études ». La synt
 - **Cas B — plusieurs projets candidats** : cas C, en expliquant l'ambiguïté dans le récapitulatif.
 - **Cas C — aucun projet candidat, ou ambiguïté** : créer une page dans « Projets / études », nommée « Synthèse `PÉRIODE` — `CLIENT` », et renseigner Nom, Client (si identifiable), Période, Statut et Source du rapport.
 
+**Client non identifiable : nommer la page d'après le fichier.** Dans ce cas seulement, le titre devient « Synthèse `PÉRIODE` — `NOM DU FICHIER SOURCE` », par exemple « Synthèse T3 2026 — rapport-t3-xyz.docx ». Sans cela, deux rapports de deux clients différents sur la même période porteraient un titre identique, et la règle de redépôt ci-dessous les fusionnerait dans une seule page comme s'ils étaient deux versions du même rapport. Le nom du fichier est le seul élément stable qui reste quand le client manque.
+
 Le filtre sur la période de l'étape 3 s'applique **même quand le client n'a qu'un seul projet**. Sans lui, une synthèse du T3 2026 pourrait atterrir dans une étude close en 2024. Une ligne en trop se corrige d'un coup d'œil ; une synthèse rangée dans le mauvais dossier ne se voit pas.
 
 ## Citer la source dans la synthèse — obligatoire
@@ -40,7 +42,15 @@ Chaque section de synthèse commence par une ligne en italique donnant le fichie
 C'est **le** lien vers le document d'origine. Un projet reçoit plusieurs rapports au fil du temps ; seule cette ligne, écrite dans chaque section, désigne le bon fichier pour la bonne synthèse.
 
 ## Rapport corrigé puis redéposé
-Le script retraite un rapport dont le contenu a changé — c'est une garantie annoncée à l'équipe. Si une synthèse pour la même période existe déjà à l'endroit où celle-ci doit aller, **ne pas la remplacer et ne pas l'ignorer** : ajouter la nouvelle sous le titre « Synthèse `PÉRIODE` — mise à jour du `DATE DU JOUR` », et signaler dans le récapitulatif que la version précédente est conservée au-dessus.
+Le script retraite un rapport dont le contenu a changé — c'est une garantie annoncée à l'équipe. Si une synthèse pour la même période existe déjà à l'endroit où celle-ci doit aller, **ne pas la remplacer et ne pas l'ignorer** : ajouter la nouvelle sous le titre « Synthèse `PÉRIODE` — mise à jour du `DATE DU JOUR` à `HHhMM` », et signaler dans le récapitulatif que la version précédente est conservée au-dessus.
+
+L'heure fait partie du titre, et ce n'est pas un détail : un rapport peut être corrigé deux fois dans la même journée. Sans l'heure, les deux mises à jour porteraient le même titre et deviendraient impossibles à distinguer dans la page.
+
+Lire la date et l'heure de la machine, ne jamais les estimer — la règle « ne jamais inventer une date » s'applique aussi au titre :
+
+```bash
+python3 -c "import datetime; print(datetime.datetime.now().strftime('%d/%m/%Y %Hh%M'))"
+```
 
 Cette règle vaut pour les trois cas :
 

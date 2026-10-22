@@ -154,14 +154,26 @@ while IFS= read -r -d '' fichier; do
 
   # La consigne ne dit pas « crée une page » : le skill décide s'il rattache la
   # synthèse au projet existant du client ou s'il crée une ligne.
+  #
+  # L'interdiction de lire les fichiers de sortie évite que l'agent prenne les
+  # comptes rendus des passages précédents pour ses propres instructions.
   consigne="Utilise le skill synthese-rapport-activite sur le fichier input/$nom.
 Ne pose aucune question : travaille de bout en bout et publie la synthèse dans Notion,
 en appliquant la règle de rattachement du skill.
+Ne lis ni output/journal.log ni output/traites.txt : ce sont les sorties du script,
+ils contiennent les exécutions précédentes et ne te concernent pas.
+Ne traite aucun autre fichier que input/$nom.
 Termine par l'endroit où la synthèse a été publiée : nom de la page projet complétée,
 ou titre de la page créée."
 
+  # « < /dev/null » n'est pas une précaution de style, c'est une correction de bug.
+  # La boucle while lit sa liste de fichiers sur stdin (substitution de processus en
+  # fin de boucle). claude -p lit aussi stdin : sans redirection il avalait le reste
+  # de la liste. Deux effets, tous deux observés : un seul fichier traité par
+  # exécution, et les chemins avalés arrivaient dans le prompt de Claude, qui
+  # répondait « votre message se termine aussi par le chemin … ».
   if claude -p "$consigne" --allowedTools "${OUTILS_AUTORISES[@]}" \
-       --output-format text >>"$JOURNAL" 2>&1; then
+       --output-format text </dev/null >>"$JOURNAL" 2>&1; then
     printf '%s\t%s\t%s\n' "$empreinte" "$(date '+%Y-%m-%dT%H:%M:%S')" "$nom" >>"$SUIVI"
     # « traité » et non « publié » : le script sait que Claude s'est terminé sans
     # erreur, pas ce qu'il a écrit dans Notion. Le détail est dans son récapitulatif,
