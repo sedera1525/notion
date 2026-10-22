@@ -33,11 +33,30 @@ premier**, et compter la relecture de contrôle dans le temps automatisé.
 
 ## 3. Enregistrer la vidéo de démonstration (2 minutes)
 
-Déroulé suggéré :
+### Avant de lancer l'enregistrement — à faire, sinon la démonstration rate
+
+`input/` contient maintenant **deux** rapports versionnés, et `output/traites.txt` n'est
+pas versionné. Sur une machine au suivi vide, une seule exécution traite donc les deux
+fichiers : plusieurs minutes de silence à l'écran au lieu de dix secondes, et deux pages
+Notion modifiées au lieu d'une.
+
+Deux commandes suffisent à préparer un plan propre :
+
+```bash
+./scripts/lancer_synthese.sh                      # marque tout comme traité
+grep -v 'rapport-t3-demo' output/traites.txt > /tmp/t && mv /tmp/t output/traites.txt
+```
+
+Le rapport vanille redevient alors le seul fichier neuf. L'exécution filmée ne traitera
+que lui, en une minute et demie environ, et ajoutera une section « mise à jour » de plus
+dans sa fiche — ce qui est précisément ce que le point 4 du déroulé montre.
+
+### Déroulé suggéré
 
 1. Montrer la page « Accueil – Démo » et les quatre bases (15 s).
-2. Déposer un rapport dans `input/` (10 s).
-3. Lancer `./scripts/lancer_synthese.sh` (10 s).
+2. Montrer le rapport posé dans `input/` (10 s).
+3. Lancer `./scripts/lancer_synthese.sh` (10 s à l'écran, ~1 min 30 d'attente à couper
+   au montage).
 4. Ouvrir « Projets / études » et montrer qu'**aucune ligne n'a été ajoutée** : la
    synthèse est allée dans la fiche « Étude de filière vanille durable ». Ouvrir cette
    fiche et faire défiler jusqu'à la section « Synthèse T3 2026 » (30 s).
@@ -48,6 +67,33 @@ Déroulé suggéré :
 
 Le point 5 est celui qui distingue une démonstration sérieuse d'une démonstration
 qui fait joli.
+
+### ⚠️ Traces de test à connaître avant d'enregistrer
+
+Les exécutions de test ont laissé des traces, conservées volontairement :
+
+| Où | État |
+|---|---|
+| Fiche « Étude de filière vanille durable » | **4 sections** de synthèse du même rapport |
+| Page « Synthèse T3 2026 — Caldeira Solaire » | **6 sections**, dont deux au titre identique |
+| Base « Projets / études » | **5 lignes** au lieu de 4 : la page Caldeira s'est ajoutée |
+
+Deux façons de s'en servir :
+
+- **Les expliquer.** C'est l'occasion de montrer qu'un rapport redéposé ne détruit jamais
+  la version précédente, et que l'arbitrage reste humain. Les deux titres identiques dans
+  la page Caldeira datent d'avant le correctif qui ajoute l'heure — autant ne pas s'y
+  attarder.
+- **Les réduire.** Une seule opération par page suffit, et la page Caldeira peut être
+  supprimée entièrement : elle n'existe que pour le test. Demande-le.
+
+Dans les deux cas, ne pas laisser le spectateur découvrir ces sections sans un mot : vues
+sans explication, elles ressemblent au doublon non maîtrisé que ce travail corrige.
+
+La propriété `Source du rapport` de la fiche vanille contient aussi
+`input/rapport-t3-demo.docx`, écrit par un passage antérieur au correctif. Le skill
+n'écrit plus cette propriété sur un projet existant. C'est sans conséquence, mais la
+valeur ne se régénérerait pas si tu la vidais.
 
 ## 4. Partager la page Notion en lecture seule
 
@@ -101,9 +147,10 @@ des affectations en fin de
 
 ### Test de bout en bout — joué
 
-`./scripts/lancer_synthese.sh` a été exécuté quatre fois, à chaque fois sur un rapport
-considéré comme jamais traité, en allant jusqu'à Notion. Code de sortie 0 chaque fois,
-entre 45 et 95 secondes par exécution. Ce qui a été vérifié :
+`./scripts/lancer_synthese.sh` a été exécuté **treize fois** — une simulation, un passage
+sans nouveau fichier, et **douze appels réels à Claude** allant jusqu'à Notion, sur deux
+rapports et deux clients différents. Code de sortie 0 chaque fois, entre 45 et 130
+secondes par exécution. Ce qui a été vérifié :
 
 - les chiffres de la synthèse recoupés un par un avec le rapport source : aucun
   inventé, aucun faux ;
@@ -113,14 +160,28 @@ entre 45 et 95 secondes par exécution. Ce qui a été vérifié :
 - le chevauchement de périodes effectivement appliqué, et pas l'inclusion ;
 - un rapport redéposé ajoute une section « mise à jour du … » et **laisse intacte** la
   précédente — vérifié dans la page, les deux sections coexistent ;
-- aucune propriété du projet modifiée.
+- aucune propriété du projet modifiée ;
+- **cas C** : pour un client sans projet (Caldeira Solaire), une page est créée, avec
+  Client, Période, Statut et Source du rapport renseignés ;
+- **pas de ligne en double** : le même rapport Caldeira repassé cinq fois de plus n'a
+  créé **aucune seconde ligne**. La base est passée de 4 à 5 lignes, et s'y est tenue ;
+- le script traite bien **tous** les fichiers non traités d'une même exécution, et pas
+  seulement le premier : suivi vidé, deux rapports neufs, une seule exécution, bilan
+  « 2 traité(s), 0 déjà fait(s) » et les deux empreintes enregistrées. Avant correction
+  du bug de stdin, ce résultat était impossible.
 
-**Non testé :** la déduplication des pages créées par le skill (cas d'un client sans
-projet dont le rapport revient corrigé). La règle est écrite, le chemin n'a pas été
-joué — il faudrait un second rapport fictif pour un client sans projet.
+Précision sur le point ci-dessus, parce que la nuance compte : l'absence de doublon ne
+vient pas de la règle « page du même titre » écrite pour le cas C. Elle vient de ce
+qu'une page créée en cas C est **reliée à la fiche client**, et devient donc le projet
+de ce client : les passages suivants la retrouvent par le cas A. Les deux chemins
+convergent.
 
-Quatre choses que ce test a révélées, et que la vérification maillon par maillon n'avait
-pas vues :
+**Reste non éprouvée** : la règle « page du même titre » du cas C. Elle ne sert que
+lorsqu'il n'y a aucune relation client à suivre, c'est-à-dire quand le client n'est pas
+identifiable dans le rapport. Il faudrait un rapport sans client nommé pour la jouer.
+
+Sept choses que ces tests ont révélées, et que la vérification maillon par maillon
+n'avait pas vues :
 
 1. `python-docx` vit dans `.venv`, hors de l'allowlist du script, qui n'autorise que
    `python3`. Le skill lit donc le `.docx` avec la bibliothèque standard (`zipfile`).
@@ -137,3 +198,35 @@ pas vues :
    période était déjà synthétisée, ce qui contredisait la garantie « un rapport corrigé
    est retraité » annoncée à l'équipe. La correction était silencieusement perdue.
    Remontée par la revue de code, pas par le test.
+5. **Le bug le plus grave, et celui que j'ai d'abord mal diagnostiqué.** Les
+   récapitulatifs contenaient des phrases absurdes : « votre message se termine aussi par
+   le chemin input/rapport-t3-demo.docx ». J'ai conclu que l'agent lisait
+   `output/journal.log` et lui ai interdit de le faire. Le symptôme a persisté.
+
+   La vraie cause est dans le shell. La boucle `while read` lit sa liste de fichiers sur
+   l'entrée standard ; `claude -p` lit aussi l'entrée standard, et avalait donc le reste
+   de la liste. Deux conséquences :
+
+   - les chemins avalés arrivaient dans le prompt de Claude, d'où les phrases absurdes ;
+   - **un seul fichier était traité par exécution.** Les autres disparaissaient en
+     silence, sans erreur et sans trace dans le journal.
+
+   Le second effet est bien plus grave que le premier, et il était invisible tant qu'un
+   seul rapport se trouvait dans `input/`. Il n'est apparu qu'en ajoutant le second
+   rapport de ce test. Correctif : `claude … < /dev/null`. Preuve : le bilan affichait
+   « 0 déjà fait » alors qu'un rapport était marqué traité ; il affiche « 1 déjà fait »
+   après correction.
+
+   La leçon n'est pas le `/dev/null`, c'est la méthode : un symptôme bizarre expliqué par
+   une hypothèse plausible reste une hypothèse. Celle-ci a tenu une heure parce qu'elle
+   semblait raisonnable, et elle était fausse.
+6. **Deux mises à jour le même jour portaient le même titre.** La règle ne datait la
+   section qu'au jour. Un rapport corrigé deux fois dans la journée produisait deux
+   sections indistinguables. Le titre porte maintenant l'heure, lue sur la machine et non
+   estimée. Remonté par l'agent lui-même dans son récapitulatif.
+7. **Un `.docx` régénéré passe pour un rapport corrigé.** `python-docx` horodate les
+   entrées de l'archive zip : deux générations du même script donnent des empreintes
+   SHA-256 différentes. Le suivi se faisant par empreinte, relancer un générateur suffit
+   à déclencher une section « mise à jour » dans Notion. C'est documenté en tête des deux
+   générateurs plutôt que corrigé : forcer les horodatages du zip compliquerait les
+   scripts pour un gain nul en démonstration.

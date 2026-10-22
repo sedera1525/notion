@@ -96,13 +96,28 @@ en **connected**.
 
 ## Utilisation
 
-### Générer le rapport de démonstration
+### Les rapports de démonstration
+
+Deux rapports fictifs sont **déjà versionnés dans `input/`** :
+
+| Fichier | Rôle |
+|---|---|
+| `rapport-t3-demo.docx` | 5 pages, pour un client qui a déjà un projet dans Notion |
+| `rapport-t3-caldeira.docx` | plus court, pour un client qui n'avait pas de projet |
+
+🛑 **Il n'y a normalement rien à générer.** Les deux scripts ci-dessous existent pour
+montrer comment les rapports ont été fabriqués, pas pour être relancés :
 
 ```bash
-.venv/bin/python scripts/generer_rapport_demo.py
+.venv/bin/python scripts/generer_rapport_demo.py    # écrase rapport-t3-demo.docx
+.venv/bin/python scripts/generer_rapport_cas_c.py   # écrase rapport-t3-caldeira.docx
 ```
 
-Produit `input/rapport-t3-demo.docx`, un rapport fictif de 5 pages.
+Relancer l'un des deux a trois effets, tous indésirables : il salit l'arbre de travail
+en écrasant un fichier versionné ; l'empreinte du `.docx` change, donc le prochain
+traitement prend le rapport pour une version corrigée et ajoute une section « mise à
+jour » dans Notion ; et le chemin que le second servait à éprouver n'est plus
+atteignable, voir [Limites connues](#limites-connues).
 
 ### Synthétiser les nouveaux rapports
 
@@ -133,10 +148,13 @@ Le filtre sur la période s'applique même quand le client n'a qu'un seul projet
 lui, une synthèse du T3 2026 pourrait atterrir dans une étude close en 2024.
 
 **Rapport corrigé puis redéposé.** Le script le retraite, puisque son empreinte a
-changé. Le skill ajoute alors une section « Synthèse `PÉRIODE` — mise à jour du … » et
-conserve la précédente au-dessus, que la synthèse vive dans une page projet ou dans une
-page créée par le skill. Rien n'est écrasé, et une correction n'est jamais perdue —
-c'est à un humain de choisir laquelle des deux versions garder.
+changé. Le skill ajoute alors une section « Synthèse `PÉRIODE` — mise à jour du … à
+`HHhMM` » et conserve la précédente au-dessus, que la synthèse vive dans une page projet
+ou dans une page créée par le skill. Rien n'est écrasé, et une correction n'est jamais
+perdue — c'est à un humain de choisir laquelle des deux versions garder.
+
+L'heure figure dans le titre parce qu'un rapport peut être corrigé deux fois le même
+jour : sans elle, les deux mises à jour seraient indistinguables dans la page.
 
 **Où est le lien vers le rapport source.** Chaque section de synthèse commence par une
 ligne en italique qui donne le fichier, sa référence, la période et l'auteur. C'est elle
@@ -204,12 +222,31 @@ dans Notion, mais contient un chemin de fichier local (`input/…`). Notion l'af
 donc comme un lien qui ne mène nulle part. C'est une valeur à lire. En production, avec
 des rapports stockés sur un espace partagé, la propriété retrouverait son usage normal.
 
-**La déduplication des pages créées par le skill n'est pas testée.** Quand un client n'a
-pas de projet, le skill crée une page ; si le même rapport corrigé revient, la règle lui
-demande de retrouver cette page et d'y ajouter une mise à jour plutôt que d'en créer une
-seconde. Ce chemin est spécifié mais n'a pas été joué : il faudrait un second rapport
-fictif pour un client sans projet. Le chemin de rattachement à un projet existant, lui,
-a été testé.
+**Une page créée par le skill devient le projet du client — pour cette période
+seulement.** Quand un client n'a pas de projet, le skill crée une page dans
+« Projets / études ». Cette page étant reliée au client, un rapport **de la même
+période** s'y rattache ensuite comme à n'importe quel projet : vérifié sur six passages
+consécutifs du même rapport, qui n'ont produit qu'une seule ligne.
+
+En revanche, un rapport du trimestre **suivant** ne chevauche pas la période de cette
+page. Le filtre écarte donc la page, et le skill crée une seconde ligne. Résultat pour un
+client qui n'a pas de projet dans la base : **une page de synthèse par trimestre**.
+
+Ce n'est pas aberrant — chaque trimestre a sa page, reliée au bon client — mais ce n'est
+pas le « un dossier, une ligne » obtenu pour un client qui a un vrai projet. Un client
+cumulant plusieurs pages finira d'ailleurs par déclencher le cas d'ambiguïté. La réponse
+propre est de créer un projet dans la base pour ce client : les synthèses s'y
+rassembleront alors toutes seules.
+
+La règle « page du même titre » prévue pour le cas C n'a donc jamais eu à servir. Elle ne
+compte que lorsqu'il n'y a aucune relation client à suivre, c'est-à-dire quand le client
+n'est pas identifiable dans le rapport. Ce cas-là n'a pas été éprouvé.
+
+**Régénérer un rapport le fait passer pour un rapport corrigé.** `python-docx` horodate
+les entrées de l'archive `.docx`, donc deux générations du même script produisent des
+empreintes différentes. Le suivi se faisant par empreinte, relancer un générateur suffit
+à déclencher une section « mise à jour » dans Notion. C'est signalé en tête des deux
+générateurs.
 
 ## Ce qui reste à faire à la main
 
@@ -227,7 +264,9 @@ Vues Notion, mesure des temps, vidéo, partage : voir
 ├── input/                       rapports à synthétiser
 ├── output/                      journal et suivi (non versionné)
 ├── scripts/
-│   ├── generer_rapport_demo.py  génère le rapport fictif
+│   ├── _docx_commun.py          fonctions partagées par les générateurs
+│   ├── generer_rapport_demo.py  génère le rapport fictif principal
+│   ├── generer_rapport_cas_c.py génère un rapport pour un client sans projet
 │   └── lancer_synthese.sh       traitement planifiable
 ├── docs/
 │   ├── guide-equipe.md          guide non technique
