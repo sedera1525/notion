@@ -1,28 +1,34 @@
 # Ce qui reste à faire à la main
 
-État au 21 octobre 2026. Tout ce qui pouvait être automatisé l'a été ; cette page
+État au 23 octobre 2026. Tout ce qui pouvait être automatisé l'a été ; cette page
 liste le reste.
 
-## 1. Créer les 9 vues Notion — obligatoire
+## 1. ✅ Les 9 vues Notion — fait
 
-L'API Notion ne crée pas de vues. C'est une limite de l'API, pas de l'outillage.
+Créées à la main le 23 octobre 2026. L'API Notion ne crée pas de vues : c'est une
+limite de l'API, pas de l'outillage, et elle n'est contournable par aucun client.
 
-| Base | Vues à créer |
+| Base | Vues |
 |---|---|
-| Clients & prospects | Pipeline (Kanban par Statut), Par pays (tableau), À relancer (filtre > 30 jours) |
-| Appels d'offres | Échéancier (calendrier), Avancement (Kanban), Urgents (filtre ≤ 14 jours) |
+| Clients & prospects | Pipeline (Kanban par Statut), Par pays (tableau), À relancer |
+| Appels d'offres | Échéancier (calendrier), Avancement (Kanban), Urgents |
 | Projets / études | Planning (chronologie), Par équipe (tableau) |
 | Documentation | Par catégorie (galerie) |
 
-Le détail — type, filtre, tri, regroupement, pas à pas — est dans
-[vues-a-creer-manuellement.md](vues-a-creer-manuellement.md).
+Les réglages de chaque vue restent écrits dans
+[vues-a-creer-manuellement.md](vues-a-creer-manuellement.md) — utile pour les
+reconstruire, et pour comprendre les filtres si une vue se vide un jour.
 
-Les données ont été préparées pour que ces vues ne soient pas vides :
-**2 appels d'offres** sont à moins de 14 jours et **4 clients** dépassent 30 jours
-sans contact.
+⚠️ Deux pièges, pour qui reprendrait ce travail :
 
-⚠️ Pour « Par équipe », regrouper sur `Équipe (démo)` et **non** sur `Équipe`, qui est
-une propriété « personne » restée vide. Les deux se ressemblent dans la liste.
+- « Par équipe » se regroupe sur `Équipe (démo)` et **non** sur `Équipe`, qui est une
+  propriété « personne » restée vide. Les deux se ressemblent dans la liste.
+- Les filtres de « À relancer » et « Urgents » doivent utiliser une date **relative**.
+  Avec une date fixe, la vue est juste le jour où on la crée et fausse la semaine
+  suivante.
+
+Une ligne vide a aussi été supprimée de « Appels d'offres » : elle avait été créée par
+un clic involontaire et apparaissait en groupe « Aucun statut » dans le Kanban.
 
 ## 2. Mesurer les temps
 

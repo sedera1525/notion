@@ -198,10 +198,10 @@ Le tableau de relevé et la formule de calcul sont dans
 
 Elles sont réelles et assumées, pas des oublis.
 
-**L'API Notion ne crée pas de vues.** Kanban, calendrier, chronologie et galerie
-doivent être créés à la main. La liste exacte — type, filtre, tri, regroupement — est
-dans [docs/vues-a-creer-manuellement.md](docs/vues-a-creer-manuellement.md). Aucun
-client ne peut contourner cette limite aujourd'hui.
+**L'API Notion ne crée pas de vues.** Kanban, calendrier, chronologie et galerie ont
+donc été créés à la main. Les réglages de chacune — type, filtre, tri, regroupement —
+sont dans [docs/vues-a-creer-manuellement.md](docs/vues-a-creer-manuellement.md), de
+quoi les reconstruire. Aucun client ne peut contourner cette limite aujourd'hui.
 
 **Le serveur MCP Notion ne crée pas de bases.** Son outil `create-a-data-source` refuse
 l'opération depuis l'API version 2025-09-03, et aucun outil « Create Database » n'est
@@ -267,7 +267,8 @@ générateurs.
 
 ## Ce qui reste à faire à la main
 
-Vues Notion, mesure des temps, vidéo, partage : voir
+Les 9 vues Notion sont créées. Restent la mesure des temps, la vidéo, la régénération du
+jeton et le partage en lecture seule : voir
 [docs/reste-a-faire.md](docs/reste-a-faire.md).
 
 ## Structure du dépôt
