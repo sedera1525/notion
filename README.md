@@ -172,6 +172,23 @@ Windows, ou GitHub Actions.
 Voir [docs/guide-equipe.md](docs/guide-equipe.md). Ce guide est également publié dans
 Notion, dans la base Documentation, page « Procédure : synthèse de rapport d'activité ».
 
+### Le contenu Notion est versionné
+
+Le dépôt est la source, Notion la publication. Les quatre pages de la base
+« Documentation » ont leur texte dans le dépôt, ce qui permet de reconstruire l'espace
+s'il est perdu, et de relire la documentation sans accès à Notion :
+
+| Page Notion | Fichier source |
+|---|---|
+| Comment utiliser cet espace | [docs/notion/comment-utiliser-cet-espace.md](docs/notion/comment-utiliser-cet-espace.md) |
+| Bonnes pratiques de prompts | [docs/notion/bonnes-pratiques-de-prompts.md](docs/notion/bonnes-pratiques-de-prompts.md) |
+| Modèle : trame d'étude type | [docs/notion/modele-trame-etude-type.md](docs/notion/modele-trame-etude-type.md) |
+| Procédure : synthèse de rapport d'activité | [docs/guide-equipe.md](docs/guide-equipe.md) |
+
+Ces copies ne se synchronisent pas toutes seules. Modifier l'une des deux faces oblige à
+reporter le changement sur l'autre — c'est le prix assumé de pouvoir reconstruire
+l'espace.
+
 ### Mesurer le gain de temps
 
 Le tableau de relevé et la formule de calcul sont dans
@@ -269,6 +286,7 @@ Vues Notion, mesure des temps, vidéo, partage : voir
 │   ├── generer_rapport_cas_c.py génère un rapport pour un client sans projet
 │   └── lancer_synthese.sh       traitement planifiable
 ├── docs/
+│   ├── notion/                  contenu des pages Notion, versionné
 │   ├── guide-equipe.md          guide non technique
 │   ├── schema-flux.md           flux complet et planification
 │   ├── vues-a-creer-manuellement.md
