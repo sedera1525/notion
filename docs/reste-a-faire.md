@@ -48,8 +48,18 @@ grep -v 'rapport-t3-demo' output/traites.txt > /tmp/t && mv /tmp/t output/traite
 ```
 
 Le rapport vanille redevient alors le seul fichier neuf. L'exécution filmée ne traitera
-que lui, en une minute et demie environ, et ajoutera une section « mise à jour » de plus
-dans sa fiche — ce qui est précisément ce que le point 4 du déroulé montre.
+que lui, en une minute et demie environ.
+
+**Un plan bien meilleur, si tu acceptes une manipulation de plus.** En l'état,
+l'exécution filmée ajoutera une section « mise à jour du … » sous la synthèse existante.
+C'est correct, mais moins parlant qu'une page qui se remplit. Vide d'abord le contenu de
+la fiche « Étude de filière vanille durable » dans Notion — sélectionner les blocs de la
+synthèse, les supprimer. La fiche projet est alors nue, et la caméra montre la séquence
+qui convainc : page vide → exécution → synthèse complète qui apparaît, rattachée au bon
+client, sans qu'aucune ligne ne soit créée.
+
+C'est la seule manipulation qui change vraiment la qualité de la démonstration. Je peux
+la faire si tu préfères.
 
 ### Déroulé suggéré
 
@@ -68,32 +78,37 @@ dans sa fiche — ce qui est précisément ce que le point 4 du déroulé montre
 Le point 5 est celui qui distingue une démonstration sérieuse d'une démonstration
 qui fait joli.
 
-### ⚠️ Traces de test à connaître avant d'enregistrer
+### État de la base « Projets / études »
 
-Les exécutions de test ont laissé des traces, conservées volontairement :
+Les douze exécutions de test avaient laissé plusieurs synthèses du même rapport dans
+chaque page. **Elles ont été réduites à une seule par page**, à la main, le 23 octobre
+2026. État actuel :
 
-| Où | État |
+| Ligne | Contenu |
 |---|---|
-| Fiche « Étude de filière vanille durable » | **4 sections** de synthèse du même rapport |
-| Page « Synthèse T3 2026 — Caldeira Solaire » | **6 sections**, dont deux au titre identique |
-| Base « Projets / études » | **5 lignes** au lieu de 4 : la page Caldeira s'est ajoutée |
+| Étude de filière vanille durable | 1 synthèse, « Synthèse T3 2026 » |
+| Synthèse T3 2026 — Caldeira Solaire | 1 synthèse, page créée par le skill (cas C) |
+| Refonte du pilotage interne | aucune synthèse |
+| Diagnostic énergétique communal | aucune synthèse |
+| Schéma directeur touristique | aucune synthèse |
 
-Deux façons de s'en servir :
+Soit **5 lignes** au lieu des 4 d'origine : la page Caldeira s'est ajoutée pendant le
+test du cas C, et elle est conservée — elle montre à l'écran ce que fait le skill quand
+un client n'a pas encore de projet.
 
-- **Les expliquer.** C'est l'occasion de montrer qu'un rapport redéposé ne détruit jamais
-  la version précédente, et que l'arbitrage reste humain. Les deux titres identiques dans
-  la page Caldeira datent d'avant le correctif qui ajoute l'heure — autant ne pas s'y
-  attarder.
-- **Les réduire.** Une seule opération par page suffit, et la page Caldeira peut être
-  supprimée entièrement : elle n'existe que pour le test. Demande-le.
+Deux points à savoir si on te pose la question :
 
-Dans les deux cas, ne pas laisser le spectateur découvrir ces sections sans un mot : vues
-sans explication, elles ressemblent au doublon non maîtrisé que ce travail corrige.
+- Les synthèses conservées sont celles produites par la **configuration finale**. Les
+  versions antérieures, issues de passages de test, ont été supprimées à la main. Ce
+  n'est donc pas l'état brut qu'aurait produit une seule exécution.
+- La réduction a été faite par un humain, pas par l'outil. Le skill ne supprime jamais
+  rien : c'est précisément sa règle, et c'est pour cela qu'il y avait plusieurs versions
+  à départager.
 
-La propriété `Source du rapport` de la fiche vanille contient aussi
-`input/rapport-t3-demo.docx`, écrit par un passage antérieur au correctif. Le skill
-n'écrit plus cette propriété sur un projet existant. C'est sans conséquence, mais la
-valeur ne se régénérerait pas si tu la vidais.
+La propriété `Source du rapport` de la fiche vanille contient
+`input/rapport-t3-demo.docx`. Elle est juste, puisque la page ne porte plus qu'une seule
+synthèse, issue de ce fichier. À noter tout de même : le skill n'écrit plus cette
+propriété sur un projet existant, donc la valeur ne se régénérerait pas si tu la vidais.
 
 ## 4. Partager la page Notion en lecture seule
 
