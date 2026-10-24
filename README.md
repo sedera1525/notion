@@ -271,6 +271,14 @@ Les 9 vues Notion sont créées. Restent la mesure des temps, la vidéo, la rég
 jeton et le partage en lecture seule : voir
 [docs/reste-a-faire.md](docs/reste-a-faire.md).
 
+## Contrôle final
+
+[docs/controle-final.md](docs/controle-final.md) reprend les sept points de contrôle du
+projet, chacun avec **ce qui a été vérifié et comment** — schémas relus par appel API,
+liens de la page d'accueil vérifiés par identifiant, cohérence croisée entre les bases,
+recherche de secrets. Les deux réserves honnêtes y figurent aussi : les vues ne sont pas
+vérifiables par l'API, et les synthèses visibles ont été réduites à la main.
+
 ## Structure du dépôt
 
 ```
@@ -292,6 +300,7 @@ jeton et le partage en lecture seule : voir
 │   ├── schema-flux.md           flux complet et planification
 │   ├── vues-a-creer-manuellement.md
 │   ├── mesure-gain-de-temps.md
+│   ├── controle-final.md        liste de contrôle, avec la preuve de chaque point
 │   └── reste-a-faire.md
 └── .claude/skills/
     └── synthese-rapport-activite/SKILL.md
