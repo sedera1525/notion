@@ -1,12 +1,16 @@
-# Vues Notion à créer à la main
+# Vues Notion — réglages de référence
 
 ## Pourquoi ce fichier
 
 L'API Notion ne permet pas de créer des vues (Kanban, calendrier, chronologie, galerie).
-Elle ne gère que les bases, les propriétés et les pages. Les vues doivent donc être
-créées manuellement dans l'interface Notion.
+Elle ne gère que les bases, les propriétés et les pages. Les 9 vues ont donc été créées
+à la main dans l'interface Notion, le 23 octobre 2026.
 
 Ce n'est pas une limite de l'outillage Claude : aucun client ne peut le faire aujourd'hui.
+
+Ce fichier garde le réglage exact de chaque vue. Il sert à les reconstruire si l'espace
+est perdu, à comprendre un filtre si une vue se vide un jour, et à vérifier qu'un
+réglage est juste — voir les comptages attendus en fin de fichier.
 
 ## Comment créer une vue
 
@@ -113,8 +117,13 @@ fictifs, et renseignée sur les quatre projets :
 |---|---|
 | Étude de filière vanille durable | Pôle Agro & Filières |
 | Diagnostic énergétique communal | Pôle Énergie & Climat |
+| Synthèse T3 2026 — Caldeira Solaire | Pôle Énergie & Climat |
 | Schéma directeur touristique | Pôle Territoires & Organisation |
 | Refonte du pilotage interne | Pôle Territoires & Organisation |
+
+La cinquième ligne est la page créée par le skill pendant le test du cas C. Sa valeur a
+été renseignée après coup : sans elle, la vue « Par équipe » affichait un groupe
+« Aucune équipe » avec une ligne isolée dedans.
 
 Les propriétés `Responsable` (Clients & prospects, Appels d'offres) et `Auteur`
 (Documentation) sont laissées vides : aucune des neuf vues ne les utilise, donc rien
@@ -123,3 +132,48 @@ ne justifie de dupliquer ces champs.
 Le type **sélection** a été retenu plutôt que du texte libre, parce que Notion garantit
 le regroupement sur une sélection et que cela reste cohérent avec `Statut`, `Phase`,
 `Secteur` et `Pays`, déjà des sélections.
+
+---
+
+## Vérifier qu'une vue est bien réglée
+
+Les 9 vues ont été créées le 23 octobre 2026. Pour contrôler qu'un réglage est juste,
+compter les lignes : un filtre mal posé se voit immédiatement au nombre.
+
+État au **24 octobre 2026** :
+
+| Vue | Attendu |
+|---|---|
+| Pipeline | 12 cartes : Prospect 3, Contacté 2, Proposition 2, Client 4, Perdu 1 |
+| Par pays | 12 lignes, 6 groupes de 2 exactement |
+| À relancer | 4 lignes (5 sans le filtre `Statut n'est pas Perdu`) |
+| Échéancier | 6 consultations |
+| Avancement | 6 cartes : Veille 1, Go/No-go 1, Rédaction 1, Soumis 0, Gagné 2, Perdu 1 |
+| Urgents | 1 ligne — voir l'avertissement ci-dessous |
+| Planning | 5 lignes, d'avril 2026 à février 2027 |
+| Par équipe | 5 lignes, 3 groupes : Agro & Filières 1, Énergie & Climat 2, Territoires & Organisation 2 |
+| Par catégorie | 4 cartes, 3 groupes : Procédure 2, Bonnes pratiques de prompts 1, Modèle 1 |
+
+La colonne *Soumis* du Kanban est vide, et c'est voulu : aucune consultation n'est en
+attente de décision. Remplir cette colonne aurait demandé d'inventer un statut faux.
+
+## ⚠️ Deux vues dépendent de la date du jour
+
+« À relancer » et « Urgents » reposent sur des filtres relatifs. Leur contenu bouge donc
+tout seul, et les dates fictives ont été calibrées autour du 21 octobre 2026.
+
+**« Urgents » sera vide à partir du 29 octobre 2026.** Son unique ligne, « Diagnostic
+énergétique — phase 2 », a une échéance au 28/10. La consultation suivante arrive au
+02/11, mais elle est passée en *Gagné* et le filtre de statut l'exclut — à juste titre,
+un dossier gagné ne demande plus de travail. La vue restera donc vide jusqu'à la
+mi-novembre, quand l'échéance du 30/11 entrera dans la fenêtre de 14 jours.
+
+**« À relancer » passera de 4 à 5 lignes vers le 28 octobre**, quand Pitons Conseil
+(dernier contact le 28/09) franchira les 30 jours.
+
+Conséquence pratique : **si la vidéo est enregistrée après le 28 octobre, « Urgents » sera
+une vue morte à l'écran.** Deux solutions, au choix :
+
+- ne pas montrer cette vue, et s'appuyer sur « Échéancier » et « Avancement » ;
+- recalibrer les échéances fictives sur la date d'enregistrement. C'est de la conception
+  de données de démonstration, pas une falsification — mais autant le décider sciemment.
