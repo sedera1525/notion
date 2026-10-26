@@ -39,3 +39,7 @@ Thumbs.db
 
 # --- Claude Code (état local, pas de config partagée) ---
 .claude/settings.local.json
+
+# --- Cahier des charges interne : volontairement non versionné ---
+# Il décrit le contexte de candidature et n'a pas à figurer dans un dépôt public.
+CLAUDE.md

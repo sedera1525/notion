@@ -87,7 +87,7 @@ réglage est juste — voir les comptages attendus en fin de fichier.
 > `Équipe (démo)` est une sélection, renseignée sur les quatre projets. C'est elle
 > qui donne une vue utilisable.
 >
-> Le CLAUDE.md demandait « tableau par Responsable » pour cette base, mais
+> Le cahier des charges demandait « tableau par Responsable » pour cette base, mais
 > « Projets / études » n'a pas de propriété `Responsable` : elle a `Équipe`.
 
 ---

@@ -283,7 +283,6 @@ vérifiables par l'API, et les synthèses visibles ont été réduites à la mai
 
 ```
 .
-├── CLAUDE.md                    consignes du projet
 ├── README.md
 ├── .env.example                 modèle de configuration
 ├── .mcp.json.example            modèle de connexion au serveur MCP Notion
