@@ -1,6 +1,6 @@
 # Contrôle final
 
-Liste de contrôle demandée en phase 9 du `CLAUDE.md`. Chaque point porte **ce qui a été
+Liste de contrôle demandée en phase 9 du cahier des charges du projet. Chaque point porte **ce qui a été
 vérifié et comment**, pas une simple coche : une coche sans preuve ne vaut rien.
 
 Contrôle effectué le 24 octobre 2026.
